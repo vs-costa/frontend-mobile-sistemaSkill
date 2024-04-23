@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { styles } from './styles';
 
-const WelcomeScreen = () => {
+const Welcome = () => {
   const navigation = useNavigation();
 
   const handleLogin = () => {
@@ -12,32 +13,23 @@ const WelcomeScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={{ uri: 'https://vsoares.com/wp-content/uploads/2024/04/logo.png' }}
+        style={styles.logo}
+      />
       <Text style={styles.title}>Bem-vindo ao Nosso App!</Text>
       <Text style={styles.subtitle}>Faça login para acessar o conteúdo.</Text>
-      <Button mode="contained" onPress={handleLogin} style={styles.button}>
+      <Button
+        mode="contained"
+        onPress={handleLogin}
+        style={styles.button}
+        labelStyle={{ color: '#FFFFFF', fontSize: 16 }}
+        buttonColor="#0958d9"
+      >
         Login
       </Button>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 10,
-  },
-  subtitle: {
-    marginBottom: 20,
-  },
-  button: {
-    width: '80%',
-  },
-});
-
-export default WelcomeScreen;
+export default Welcome;

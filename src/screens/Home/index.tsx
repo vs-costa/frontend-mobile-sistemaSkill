@@ -4,6 +4,7 @@ import { Button, Modal, Text, List, Avatar, IconButton, TextInput, Menu, Provide
 import { useNavigation } from '@react-navigation/native';
 import { useAuth, api } from '../../api/AuthContext';
 import { Picker } from '@react-native-picker/picker';
+import { styles } from './styles';
 
 interface Skill {
   id: number;
@@ -149,7 +150,7 @@ const Home = () => {
   return (
     <Provider>
       <View style={styles.container}>
-        <Text style={styles.title}>Skills</Text>
+        <Text style={styles.title}>Skill</Text>
         {userSkills.length === 0 ? (
           <Text style={styles.noSkills}>Nenhuma skill cadastrada.</Text>
         ) : (
@@ -179,7 +180,7 @@ const Home = () => {
         <Button mode="contained" onPress={() => setIsModalVisible(true)} style={styles.addButton}>
           Adicionar Skill
         </Button>
-        <Button onPress={handleLogout} style={styles.logoutButton}>
+        <Button onPress={handleLogout} style={styles.logoutButton} textColor='#0958d9' >
           Logout
         </Button>
         <Modal visible={isModalVisible} onDismiss={() => setIsModalVisible(false)}>
@@ -195,13 +196,13 @@ const Home = () => {
               ))}
             </Picker>
             <Text style={styles.levelLabel}>Nível:</Text>
-            <Button onPress={() => handleLevelSelection('INICIANTE')} style={styles.levelButton}>
+            <Button onPress={() => handleLevelSelection('INICIANTE')} style={styles.levelButton} textColor='#fff'>
               Iniciante
             </Button>
-            <Button onPress={() => handleLevelSelection('INTERMEDIARIO')} style={styles.levelButton}>
+            <Button onPress={() => handleLevelSelection('INTERMEDIARIO')} style={styles.levelButton} textColor='#fff'>
               Intermediário
             </Button>
-            <Button onPress={() => handleLevelSelection('AVANCADO')} style={styles.levelButton}>
+            <Button onPress={() => handleLevelSelection('AVANCADO')} style={styles.levelButton} textColor='#fff'>
               Avançado
             </Button>
           </View>
@@ -244,68 +245,5 @@ const Home = () => {
     </Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 10,
-  },
-  noSkills: {
-    fontSize: 16,
-    marginTop: 10,
-  },
-  addButton: {
-    marginTop: 20,
-  },
-  logoutButton: {
-    marginTop: 10,
-    alignSelf: 'center',
-  },
-  actions: {
-    flexDirection: 'row',
-  },
-  listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  listItemContent: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  listItemTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  listItemDescription: {
-    fontSize: 14,
-    marginTop: 5,
-  },
-  listItemLevel: {
-    fontSize: 16,
-    marginTop: 5,
-    fontWeight: 'bold',
-  },
-  levelButton: {
-    marginTop: 10,
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-  },
-  levelLabel: {
-    marginTop: 20,
-    marginBottom: 10,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
 
 export default Home;

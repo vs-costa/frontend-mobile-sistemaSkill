@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { TextInput, Button, Title, Checkbox, Text, Modal } from 'react-native-paper';
+import { View, StyleSheet, Image } from 'react-native';
+import { TextInput, Button, Title, Checkbox, Text, Modal, IconButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../api/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { styles } from './styles';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +12,8 @@ const Login = () => {
   const [rememberCredentials, setRememberCredentials] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showSuccessModal, setShowSuccessModal] = useState(false); // State para controlar a exibição do modal
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   const { login } = useAuth();
 
@@ -38,8 +40,8 @@ const Login = () => {
     if (!newValue) {
       setEmail('');
       setPassword('');
-      await AsyncStorage.removeItem('email'); // Remove o email do AsyncStorage
-      await AsyncStorage.removeItem('password'); // Remove a senha do AsyncStorage
+      await AsyncStorage.removeItem('email');
+      await AsyncStorage.removeItem('password');
     }
   };
 
@@ -49,7 +51,7 @@ const Login = () => {
       await login(email, password);
       setLoading(false);
       setError('');
-      setShowSuccessModal(true); // Exibir o modal quando o login for bem-sucedido
+      setShowSuccessModal(true);
       if (rememberCredentials) {
         await AsyncStorage.setItem('email', email);
         await AsyncStorage.setItem('password', password);
@@ -58,9 +60,9 @@ const Login = () => {
         await AsyncStorage.removeItem('password');
       }
       setTimeout(() => {
-        setShowSuccessModal(false); // Esconder o modal após alguns segundos
+        setShowSuccessModal(false);
         navigation.navigate('Home');
-      }, 2000); // Tempo em milissegundos para exibir o modal
+      }, 2000);
     } catch (error) {
       setLoading(false);
       setError('Email ou senha incorretos');
@@ -69,6 +71,10 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={{ uri: 'https://vsoares.com/wp-content/uploads/2024/04/logo.png' }}
+        style={styles.logo}
+      />
       <Title style={styles.title}>Login</Title>
       <TextInput
         label="Email"
@@ -80,20 +86,27 @@ const Login = () => {
         label="Senha"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
         style={styles.input}
+        secureTextEntry={!showPassword}
+        right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'}
+        onPress={() => setShowPassword(!showPassword)} />}
       />
       <Checkbox.Item
         label="Lembrar login e senha"
         status={rememberCredentials ? 'checked' : 'unchecked'}
         onPress={handleRememberCredentialsChange}
         style={styles.checkbox}
+        color='#fff'
+        uncheckedColor='#fff'
+        labelStyle={{ color: '#FFFFFF', fontSize: 16 }}
       />
       <Button
         mode="contained"
         onPress={handleLogin}
         loading={loading}
         style={styles.button}
+        labelStyle={{ color: '#FFFFFF', fontSize: 16 }}
+        buttonColor="#0958d9"
       >
         Entrar
       </Button>
@@ -109,46 +122,5 @@ const Login = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    marginBottom: 20,
-  },
-  input: {
-    marginBottom: 10,
-    width: '100%',
-  },
-  checkbox: {
-    width: '100%',
-    marginBottom: 10,
-  },
-  button: {
-    width: '100%',
-    marginTop: 10,
-  },
-  link: {
-    marginTop: 10,
-    color: 'blue',
-  },
-  error: {
-    color: 'red',
-    marginBottom: 10,
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalText: {
-    textAlign: 'center',
-  },
-});
 
 export default Login;
