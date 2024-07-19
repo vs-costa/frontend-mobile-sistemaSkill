@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../api/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from './styles';
+import { Feather } from '@expo/vector-icons';
+import SuccessModal from '../../components/SuccessModal';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -36,10 +38,13 @@ const Login = () => {
   const handleRememberCredentialsChange = async () => {
     const newValue = !rememberCredentials;
     setRememberCredentials(newValue);
-
+  
     if (!newValue) {
       setEmail('');
       setPassword('');
+      await AsyncStorage.removeItem('email');
+      await AsyncStorage.removeItem('password');
+    } else {
       await AsyncStorage.removeItem('email');
       await AsyncStorage.removeItem('password');
     }
@@ -62,7 +67,7 @@ const Login = () => {
       setTimeout(() => {
         setShowSuccessModal(false);
         navigation.navigate('Home');
-      }, 2000);
+      }, 1500);
     } catch (error) {
       setLoading(false);
       setError('Email ou senha incorretos');
@@ -89,7 +94,7 @@ const Login = () => {
         style={styles.input}
         secureTextEntry={!showPassword}
         right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'}
-        onPress={() => setShowPassword(!showPassword)} />}
+          onPress={() => setShowPassword(!showPassword)} />}
       />
       <Checkbox.Item
         label="Lembrar login e senha"
@@ -114,11 +119,11 @@ const Login = () => {
         Ainda não tem cadastro? Clique aqui!
       </Text>
       {error !== '' && <Text style={styles.error}>{error}</Text>}
-      <Modal visible={showSuccessModal} onDismiss={() => setShowSuccessModal(false)}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalText}>Login bem-sucedido!</Text>
-        </View>
-      </Modal>
+      <SuccessModal
+        visible={showSuccessModal}
+        onDismiss={() => setShowSuccessModal(false)}
+        message="Login bem-sucedido!"
+      />
     </View>
   );
 };

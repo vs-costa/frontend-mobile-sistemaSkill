@@ -10,7 +10,7 @@ interface AuthContextType {
 }
 
 export const api = axios.create({
-    baseURL: 'http://192.168.1.4:8080/api'
+    baseURL: 'http://192.168.1.5:8080/api'
 });
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const response = await api.post('/systemUser/login', { email, password });
             const token = response.data.token;
             const userId = response.data.userId;
-            await AsyncStorage.setItem('token', token); // Armazena o token no AsyncStorage
+            await AsyncStorage.setItem('token', token);
             setIsAuthenticated(true);
             setUserId(userId);
         } catch (error) {
@@ -52,8 +52,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const checkAuthentication = async () => {
             const token = await AsyncStorage.getItem('token');
             if (token) {
-                setIsAuthenticated(true);
-                // Você pode adicionar lógica adicional aqui para verificar se o token é válido
+                try {
+                    // Opcional: Faça uma requisição ao backend para verificar se o token é válido
+                    await api.get('/verifyToken', { headers: { Authorization: `Bearer ${token}` } });
+                    setIsAuthenticated(true);
+                } catch (error) {
+                    console.error('Token inválido:', error);
+                    await AsyncStorage.removeItem('token');
+                }
             }
         };
         checkAuthentication();

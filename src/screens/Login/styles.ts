@@ -40,13 +40,4 @@ export const styles = StyleSheet.create({
       color: 'red',
       marginBottom: 10,
     },
-    modalContent: {
-      backgroundColor: 'white',
-      padding: 20,
-      borderRadius: 10,
-      alignItems: 'center',
-    },
-    modalText: {
-      textAlign: 'center',
-    },
   });

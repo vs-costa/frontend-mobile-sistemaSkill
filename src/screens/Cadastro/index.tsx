@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { TextInput, Button, Title, Modal } from 'react-native-paper';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, Image, ToastAndroid } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { api } from '../../api/AuthContext';
 import { styles } from './styles';
+import SuccessModal from '../../components/SuccessModal';
 
 const Cadastro = () => {
   const [email, setEmail] = useState('');
@@ -12,9 +13,19 @@ const Cadastro = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
   const navigation = useNavigation();
 
+  const showToast = (message) => {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+    setToastVisible(true);
+  };
+
   const cadastrar = async () => {
+    if (senha !== confirmPassword) {
+      showToast('As senhas não coincidem. Por favor, verifique e tente novamente.')
+      return;
+    }
     try {
       await api.post('/systemUser/registro?email=' + email, {
         email: email,
@@ -32,6 +43,8 @@ const Cadastro = () => {
       alert('Erro ao cadastrar usuário. Por favor, tente novamente.');
     }
   };
+
+
 
   return (
     <View style={styles.container}>
@@ -53,7 +66,7 @@ const Cadastro = () => {
         style={styles.input}
         secureTextEntry={!showPassword}
         right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'}
-        onPress={() => setShowPassword(!showPassword)} />}
+          onPress={() => setShowPassword(!showPassword)} />}
       />
       <TextInput
         label="Confirmar Senha"
@@ -62,7 +75,7 @@ const Cadastro = () => {
         style={styles.input}
         secureTextEntry={!showConfirmPassword}
         right={<TextInput.Icon icon={showConfirmPassword ? 'eye-off' : 'eye'}
-        onPress={() => setShowConfirmPassword(!showConfirmPassword)} />}
+          onPress={() => setShowConfirmPassword(!showConfirmPassword)} />}
       />
       <Button mode="contained" onPress={cadastrar}
         labelStyle={{ color: '#FFFFFF', fontSize: 16 }}
@@ -70,11 +83,11 @@ const Cadastro = () => {
         style={styles.button}>
         Cadastrar
       </Button>
-      <Modal visible={modalVisible} onDismiss={() => setModalVisible(false)}>
-        <View style={styles.modalContainer}>
-          <Title style={styles.modalTitle}>Cadastro realizado com sucesso!</Title>
-        </View>
-      </Modal>
+      <SuccessModal
+        visible={modalVisible}
+        onDismiss={() => setModalVisible(false)}
+        message="Cadastro realizado com sucesso!"
+      />
     </View>
   );
 };

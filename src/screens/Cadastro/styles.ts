@@ -27,14 +27,5 @@ export const styles = StyleSheet.create({
       marginTop: 10,
       borderRadius: 8,
     },
-    modalContainer: {
-      backgroundColor: 'white',
-      padding: 20,
-      borderRadius: 10,
-      alignItems: 'center',
-    },
-    modalTitle: {
-      textAlign: 'center',
-    },
   });
   
